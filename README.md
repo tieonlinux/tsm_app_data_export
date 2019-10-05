@@ -1,5 +1,5 @@
 # tsm_app_data_export
-Export TSM auctions items' stats to csv, json, hdf5 files
+Export TSM auctions items' stats from *AppData.lua* to csv, json or hdf5 files
 
 ## requirements
 - [python 3.7](https://www.python.org/downloads/)
