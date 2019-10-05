@@ -107,6 +107,36 @@ def get_wow_path(tsm_log):
                 line = f.readline()
 
 
+REG_PATH = r"Software\TSMExport"
+REG_KEY = "WowPath"
+
+
+def get_saved_wow_path():
+    import winreg
+    try:
+        rk = winreg.OpenKey(winreg.HKEY_CURRENT_USER, REG_PATH, 0, winreg.KEY_READ)
+        try:
+            return Path(winreg.QueryValueEx(rk, REG_KEY)[0])
+        finally:
+            winreg.CloseKey(rk)
+    except WindowsError:
+        return None
+
+
+def save_wow_path(path):
+    import winreg
+    try:
+        winreg.CreateKey(winreg.HKEY_CURRENT_USER, REG_PATH)
+    except WindowsError:
+        pass
+
+    rk = winreg.OpenKey(winreg.HKEY_CURRENT_USER, REG_PATH, 0, winreg.KEY_WRITE)
+    try:
+        winreg.SetValueEx(rk, REG_KEY, 0, winreg.REG_SZ, str(path))
+    finally:
+        winreg.CloseKey(rk)
+
+
 def get_tsm_log_path():
     tsm_log = os.path.expandvars(r'%APPDATA%\TradeSkillMaster\TSMApplication\TSMApplication.log')
     tsm_log = Path(tsm_log)
@@ -116,6 +146,7 @@ def get_tsm_log_path():
 def main():
     tsm_log = None
     if platform.system() == 'Windows':
+
         tsm_log = get_tsm_log_path()
         if not tsm_log.exists():
             print("There's no TSM log.")
@@ -137,6 +168,10 @@ def main():
             export_dataframe(out, df, args.format)
     elif tsm_log:
         wow_path = get_wow_path(tsm_log)
+        if wow_path is None:
+            wow_path = get_saved_wow_path()
+        else:
+            save_wow_path(wow_path)
         assert wow_path and wow_path.exists(), "unable to find wow directory." \
                                                " Please provide --app_helper_path command line argument"
         cnt = 0
