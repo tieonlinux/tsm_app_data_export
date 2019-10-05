@@ -6,10 +6,10 @@ Export TSM auctions items' stats from *AppData.lua* to csv, json or hdf5 files
 - properly configured [TSM application](https://www.tradeskillmaster.com/app/overview)
 
 ## install dependencies
-> python -m pip install -r requirement.txt
+```python -m pip install -r requirement.txt```
 
 ## launch
-> python export_tsm_auctions.py -r <path_to_app_data.lua> -o <outputdir> -f csv
+```python export_tsm_auctions.py -r <path_to_app_data.lua> -o <outputdir> -f csv```
   
 or on windows just double click **export_tsm_auctions.py**
   
